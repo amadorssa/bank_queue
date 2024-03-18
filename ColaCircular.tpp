@@ -1,111 +1,115 @@
-#include "ColaCircular.hpp"
+#include<iostream>
 
-// Constructor de la clase Cola enlazada
-template <typename T>
-Cola<T>::Cola() : primero(nullptr), ultimo(nullptr), tam(0) {}
+template<typename varType/*=int*/>
+Cola<varType>::Cola(): ultimo(nullptr), tam(0)
+{
 
-// Destructor de la clase Cola enlazada
-template <typename T>
-Cola<T>::~Cola() {
+}
+/********************************************************/
+template<typename varType/*=int*/>
+Cola<varType>::~Cola()
+{
     Vaciar();
 }
-
-// Constructor copia de la clase Cola enlazada
-template <typename T>
-Cola<T>::Cola(const Cola<T> &c) : primero(nullptr), ultimo(nullptr), tam(0) {
-    *this = c;
-}
-
-// Metodo operador de asignación de la clase Cola enlazada
-template <typename T>
-Cola<T>& Cola<T>::operator=(const Cola<T>& c)
+/********************************************************/
+template<typename varType/*=int*/>
+Cola<varType>::Cola(const Cola &q)
 {
-    if(this == &c) return *this;
-    this->Vaciar();
-
-    Elemento *actual = c.primero;
-    while(actual != nullptr){
-        Agregar(actual -> valor);
-        actual = actual -> siguiente;
-    }
-    return *this;
+    *this=q;
 }
-
-// Método para agregar un elemento a la cola
-template <typename T>
-void Cola<T>::Agregar(T valor) {
-    Elemento *aux = new Elemento;
-    aux->valor = valor;
-    aux->siguiente = nullptr;
-    if (EstaVacia()) {
-        primero = aux;
-    } else {
-        ultimo->siguiente = aux;
-    }
-    ultimo = aux;
-    ++tam;
-}
-
-// Método para eliminar un elemento de la cola
-template <typename T>
-void Cola<T>::Eliminar() {
-    if (EstaVacia()) {
-        throw std::out_of_range("La cola está vacía");
-    }
-    Elemento *aux = primero;
-    primero = primero->siguiente;
-    delete aux;
-    --tam;
-}
-
-// Método para obtener el elemento del frente de la cola
-template <typename T>
-T Cola<T>::ObtenerFrente() const {
-    if (EstaVacia()) {
-        throw std::out_of_range("La cola está vacía");
-    }
-    return primero->valor;
-}
-
-// Método para obtener el elemento del fondo de la cola
-template <typename T>
-T Cola<T>::ObtenerFondo() const {
-    if (EstaVacia()) {
-        throw std::out_of_range("La cola está vacía");
-    }
-    return ultimo->valor;
-}
-
-// Método para vaciar la cola
-template <typename T>
-void Cola<T>::Vaciar() {
-    while (!EstaVacia()) {
-        Eliminar();
+/********************************************************/
+template<typename varType/*=int*/>
+Cola<varType>& Cola<varType>::operator=(const Cola &q)
+{
+    if(this==&q) return *this;
+    Vaciar();
+    Elemento* aAgregar=q.ultimo->siguiente;
+    for(int i=0;i<q.ObtenerTam();++i)
+    {
+        Agregar(aAgregar->valor);
+        aAgregar=aAgregar->siguiente;
     }
 }
-
-// Método para obtener el tamaño de la cola
-template <typename T>
-int Cola<T>::ObtenerTam() const {
-    return tam;
+/********************************************************/
+template<typename varType/*=int*/>
+void Cola<varType>::Agregar(varType e)
+{
+    Elemento* newElem= new Elemento(e,EstaVacia()?nullptr:ultimo->siguiente);
+    (EstaVacia()? newElem->siguiente: ultimo->siguiente)=newElem;
+    ultimo=newElem;
+    tam++;
 }
-
-// Método para verificar si la cola está vacía
-template <typename T>
-bool Cola<T>::EstaVacia() const {
-    return tam == 0;
+/********************************************************/
+template<typename varType/*=int*/>
+varType Cola<varType>::ObtenerFrente() const
+{
+    if(EstaVacia()) throw ColaVacia();
+    return ultimo->siguiente->valor;
 }
-
-// Método para imprimir la cola
-template <typename T>
-void Cola<T>::Imprimir() const {
-    if (EstaVacia()) {
+/********************************************************/
+template<typename varType/*=int*/>
+bool Cola<varType>::EstaVacia() const
+{
+    return tam==0;
+}
+/********************************************************/
+template<typename varType/*=int*/>
+void Cola<varType>::Eliminar()
+{
+    if(ultimo==nullptr) throw ColaVacia();
+    if(tam==1)
+    {
+        delete ultimo->siguiente;
+        ultimo=nullptr;
+        tam--;
         return;
     }
-    Elemento *aux = primero;
-    while (aux != nullptr) {
-        std::cout << aux->valor << std::endl;
-        aux = aux->siguiente;
-    }
-    std::cout << std::endl;
+    Elemento* aEliminar=ultimo->siguiente;
+    ultimo->siguiente=ultimo->siguiente->siguiente;
+    delete aEliminar;
+    tam--;
+
+}
+/********************************************************/
+template<typename varType/*=int*/>
+int Cola<varType>::ObtenerTam() const
+{
+    return tam;
+}
+/********************************************************/
+template<typename varType/*=int*/>
+varType Cola<varType>::ObtenerFondo() const
+{
+    if(EstaVacia()) throw ColaVacia();
+    return ultimo->valor;
+}
+/********************************************************/
+template<typename varType/*=int*/>
+void Cola<varType>::Vaciar()
+{
+    Elemento* aBorrar=ultimo->siguiente;
+    while(!EstaVacia()) Eliminar();
+}
+/********************************************************/
+template<typename varType/*=int*/>
+void Cola<varType>::Imprimir() const
+{
+    if(EstaVacia()) return;
+    Elemento* iterador=ultimo->siguiente;
+    for(int i=0;i<tam;++i)
+    {
+        std::cout<<iterador->valor<<' ';
+        iterador=iterador->siguiente;
+    } 
+}
+/********************************************************/
+
+/********************************************************/
+template<typename varType/*=int*/>
+Cola<varType>::Elemento::Elemento(varType v, Cola<varType>::Elemento* s/*=nullptr*/): valor(v), siguiente(s){}
+/********************************************************/
+template<typename varType/*=int*/>
+const char* Cola<varType>::ColaVacia::what() const throw()
+{
+    return "La cola no tiene elementos";
 }

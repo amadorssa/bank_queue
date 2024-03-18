@@ -5,6 +5,7 @@
 #include <ctime>
 #include <chrono>
 #include <thread>
+#include <iomanip>
 
 // Implementación de la clase Cliente
 
@@ -31,7 +32,7 @@ std::istream& operator>>(std::istream& is, Cliente& c) {
 
 // Implementación de la clase Caja
 // Metodo constructor
-Caja::Caja(int tiempoCliente) : tiempoRestante(tiempoCliente) {}
+Caja::Caja(int numeroCaja, int tiempoCliente) : numeroCaja(numeroCaja), tiempoRestante(tiempoCliente) {}
 
 
 // Metodo para verificar si la caja está disponible
@@ -40,7 +41,8 @@ bool Caja::estaDisponible() const {
 }
 
 // Metodo para atender al cliente
-void Caja::atenderCliente(Cola<Cliente>& c) {
+void Caja::atenderCliente(Cola<Cliente>& c, int numeroCaja) {
+
     if (estaDisponible()) {
         // Si la caja está disponible, atender al cliente
         if (!c.EstaVacia()) {
@@ -58,7 +60,7 @@ void Caja::atenderCliente(Cola<Cliente>& c) {
     } else {
         // Si la caja no está disponible
         if (tiempoRestante > 0) {
-            // Si el tiempo restante es mayor que 0, mostrar el nombre del cliente que está siendo atendido
+            // Si el tiempo restante es mayor que 0, mostrar el nombre del cliente que está siendo atendido            
             std::cout << "\033[ 4 ; 0H" << caja.ObtenerFondo() << std::endl << std::endl;
         } else {
             // Si el tiempo restante es 0, mostrar que la caja está disponible
@@ -67,8 +69,8 @@ void Caja::atenderCliente(Cola<Cliente>& c) {
         // Avanzar el tiempo en la caja
         avanzarTiempo();
     }
-}
 
+}
 
 // Metodo para avanzar el tiempo en la caja mientras atiende a un cliente
 void Caja::avanzarTiempo() {

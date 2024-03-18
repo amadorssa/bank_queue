@@ -6,6 +6,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+#include <iomanip>
 
 using namespace std;
 
@@ -35,7 +36,9 @@ int main() {
     }
 
     Cola<Cliente> fila;
-    Caja caja(0); // Crear una instancia de Caja con el tiempo total del banco
+    Caja caja(1, 0);  // Caja 1
+    Caja caja2(2, 0); // Caja 2
+    Caja caja3(3, 0); // Caja 3
 
     // Mostrar contador y procesar clientes hasta que termine el tiempo total del banco
     cout << "Tiempo total de atención del banco: " << tiempoBanco << " segundos\n";
@@ -47,10 +50,7 @@ int main() {
         // Posicionar el cursor en la parte superior izquierda de la terminal y mostrar el tiempo transcurrido
         cout << "\033[H" << "Tiempo transcurrido: " << tiempoTranscurrido << " segundos\n";
 
-        // Mostrar caja 1
-        cout << "\033[ 3 ; 0H" << "Caja 1" << endl;
 
-        //UTILERIA
         // Pasar clientes de la cola clientes a la cola fila cada 5 segundos
         if (tiempoTranscurrido % 3 == 0 && !clientes.EstaVacia()) {
             // Obtener el primer cliente de la cola de clientes y agregarlo a la fila
@@ -61,11 +61,22 @@ int main() {
             clientes.Eliminar();
         }
 
-        // Simular clientes
-        caja.atenderCliente(fila);
+        // Mostrar las cajas y las personas que están siendo atendidas en cada una de ellas
+        for (int i = 1; i <= 3; ++i) {
+            cout << "Caja " << i << endl;
+            if (i == 1) {
+                caja.atenderCliente(fila, i);
+            } else if (i == 2) {
+                caja2.atenderCliente(fila, i);
+            } else {
+                caja3.atenderCliente(fila, i);
+            }
+            cout << endl; // Salto de línea entre cada caja
+        }
 
 
         // Mostrar clientes en la fila
+        cout << "Clientes en la fila: " << endl;
         fila.Imprimir();
 
         // Actualizar la pantalla cada segundo

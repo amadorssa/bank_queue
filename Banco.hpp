@@ -18,14 +18,15 @@ private:
 /*************************************************************/
 class Caja {
 public:
-    Caja(int tiempoTotal); // Constructor que toma el tiempo total del banco
+    Caja(int numeroCaja, int tiempoTotal); // Constructor que toma el número de la caja y el tiempo total del banco
     bool estaDisponible() const; 
     void avanzarTiempo();
-    void atenderCliente(Cola<Cliente>& c); // Método para atender a los clientes
+    void atenderCliente(Cola<Cliente>& c, int numeroCaja); // Método para atender a los clientes
     Cliente ObtenerClientePrimero() const;
 
 private:
     int tiempoRestante;
+    int numeroCaja; // Número de la caja
     Cola<Cliente> caja;
 };
 
