@@ -35,64 +35,52 @@ int main() {
     }
 
     Cola<Cliente> fila;
+    Caja caja(0); // Crear una instancia de Caja con el tiempo total del banco
 
-// Mostrar contador y procesar clientes hasta que termine el tiempo total del banco
-std::cout << "Tiempo total de atención del banco: " << tiempoBanco << " segundos\n";
-int tiempoTranscurrido = 0;
+    // Mostrar contador y procesar clientes hasta que termine el tiempo total del banco
+    cout << "Tiempo total de atención del banco: " << tiempoBanco << " segundos\n";
+    int tiempoTranscurrido = 0;
 
-while (tiempoTranscurrido <= tiempoBanco || !clientes.EstaVacia()) {
-    system("clear"); // Limpiar pantalla (sistema UNIX/Linux)
+    while (tiempoTranscurrido <= tiempoBanco || !clientes.EstaVacia()) {
+        system("clear"); // Limpiar pantalla (sistema UNIX/Linux)
 
-    // Posicionar el cursor en la parte superior izquierda de la terminal
-    std::cout << "\033[H";
+        // Posicionar el cursor en la parte superior izquierda de la terminal y mostrar el tiempo transcurrido
+        cout << "\033[H" << "Tiempo transcurrido: " << tiempoTranscurrido << " segundos\n";
 
-    // Mostrar tiempo transcurrido
-    std::cout << "Tiempo transcurrido: " << tiempoTranscurrido << " segundos\n";
+        // Mostrar caja 1
+        cout << "\033[ 3 ; 0H" << "Caja 1" << endl;
 
-    // Pasar clientes de la cola clientes a la cola fila cada 5 segundos
-    if (tiempoTranscurrido % 5 == 0 && !clientes.EstaVacia()) {
-        // Obtener el primer cliente de la cola de clientes y agregarlo a la fila
-        Cliente cliente = clientes.ObtenerPrimero();
-        fila.Agregar(cliente);
+        //UTILERIA
+        // Pasar clientes de la cola clientes a la cola fila cada 5 segundos
+        if (tiempoTranscurrido % 3 == 0 && !clientes.EstaVacia()) {
+            // Obtener el primer cliente de la cola de clientes y agregarlo a la fila
+            Cliente cliente = clientes.ObtenerFrente();
+            fila.Agregar(cliente);
 
-        // Eliminar el cliente de la cola de clientes
-        clientes.Eliminar();
+            // Eliminar el cliente de la cola de clientes
+            clientes.Eliminar();
+        }
+
+        // Simular clientes
+        caja.atenderCliente(fila);
+
+
+        // Mostrar clientes en la fila
+        fila.Imprimir();
+
+        // Actualizar la pantalla cada segundo
+        this_thread::sleep_for(chrono::seconds(1));
+
+        // Incrementar el tiempo transcurrido
+        tiempoTranscurrido++;
     }
 
-    // Mostrar clientes en la fila
-    fila.Imprimir();
-
-    // Actualizar la pantalla cada segundo
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    // Incrementar el tiempo transcurrido
-    tiempoTranscurrido++;
-}
-
-// Mostrar mensaje de finalización
-if (tiempoTranscurrido > tiempoBanco) {
-    std::cout << "Todos los clientes han sido atendidos antes de que se agotara el tiempo total del banco.\n";
-} else {
-    std::cout << "Tiempo total de atención del banco agotado.\n";
-}
-
-
-    // Simulación de la caja del banco
-    Caja caja1;
-
-    Cliente clienteEnFrente = fila.ObtenerPrimero();
-
-    // Simular clientes
-    if (caja1.estaDisponible()) {
-        caja1.atenderCliente(clienteEnFrente);
-        fila.Eliminar();
-
-    // Simular tiempo de atención de cada cliente (en segundos)
-    int tiempoAtencion = clienteEnFrente.obtenerTiempoAtencion();
-    for (int t = 0; t < tiempoAtencion; ++t) {
-        caja1.avanzarTiempo();
+    // Mostrar mensaje de finalización
+    if (tiempoTranscurrido > tiempoBanco) {
+        cout << "Todos los clientes han sido atendidos antes de que se agotara el tiempo total del banco.\n";
+    } else {
+        cout << "Tiempo total de atención del banco agotado.\n";
     }
-}
+
     return 0;
-
 }

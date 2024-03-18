@@ -60,11 +60,20 @@ void Cola<T>::Eliminar() {
 
 // Método para obtener el elemento del frente de la cola
 template <typename T>
-T Cola<T>::ObtenerPrimero() const {
+T Cola<T>::ObtenerFrente() const {
     if (EstaVacia()) {
         throw std::out_of_range("La cola está vacía");
     }
     return primero->valor;
+}
+
+// Método para obtener el elemento del fondo de la cola
+template <typename T>
+T Cola<T>::ObtenerFondo() const {
+    if (EstaVacia()) {
+        throw std::out_of_range("La cola está vacía");
+    }
+    return ultimo->valor;
 }
 
 // Método para vaciar la cola
